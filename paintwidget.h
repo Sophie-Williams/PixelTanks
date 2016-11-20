@@ -8,7 +8,8 @@
 class PaintWidget : public QWidget
 {
     Q_OBJECT
-
+    int heigth;
+    int width;
     World * world;
 public:
     explicit PaintWidget(QWidget *parent = 0,int _height = worldHeight,int _width = worldWidth,int _bots = botsCount,bool player = false);

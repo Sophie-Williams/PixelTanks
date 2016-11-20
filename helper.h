@@ -31,7 +31,7 @@ const int renewInterval = 30;
 const int selectionInterval = 300;
 
 const int defaultHealthPoints = 600;
-const int wallHealthPoints = 2500;
+const int wallHealthPoints = 800;
 
 const Attack simpleAttack(10,  0,100,15*cellSize, cellSize/5,  SIMPLE);
 const Attack freezeAttack(30, 20, 20,10*cellSize,cellSize/10,FREEZING);

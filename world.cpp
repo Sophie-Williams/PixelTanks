@@ -66,8 +66,11 @@ World::World(int heigth,int width,int bots,bool player)
     for(int i=0;i<bots;++i){
 
         p = FindEmptyCell();
+        if(rand()%4){
         t =  new Tank(p,new NeuralNetwork(neuroNetConfiguration),LEFT,neuroBotColor);
         neuroNets.push_back((NeuralNetwork*)(t->GetStrategy()));
+        }
+        else t = new Tank(p,new DefaultStrategy(),LEFT,tankColor);
         map[p.x()][p.y()] = t;
         tanks.push_back(t);
     }
@@ -284,4 +287,6 @@ void World::Selection(){
             neuroNets[i]  = new NeuralNetwork(neuroNetConfiguration);
         }
     }
+    for(int i=0;i<size;++i)
+        neuroNets[i]->SetPoints(0);
 }
