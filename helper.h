@@ -15,6 +15,8 @@ const int turnDelay = 7;
 const int cellSize = 22;
 const int paintSize = 11;
 const int defaultShotDelay = 2;
+const int defaultRespawnDelay = 30;
+
 
 const int killPoints = 100;
 
@@ -26,25 +28,29 @@ const int botsCount = 20;
 const int maxHealth = 1000000;
 
 const int renewInterval = 30;
+const int selectionInterval = 300;
 
 const int defaultHealthPoints = 600;
 const int wallHealthPoints = 2500;
 
 const Attack simpleAttack(10,  0,100,15*cellSize, cellSize/5,  SIMPLE);
 const Attack freezeAttack(30, 20, 20,10*cellSize,cellSize/10,FREEZING);
-const Attack wallAttck   (50,  0,300, 5*cellSize,cellSize/15, WALLING);
+const Attack wallAttck   (80,  0,300, 5*cellSize,cellSize/15, WALLING);
 
 const Attack attacks[4] = {
     Attack(),simpleAttack,freezeAttack,wallAttck
 };
 
-const QColor tankColor = Qt::black;
+const QColor tankColor = Qt::yellow;
+const QColor neuroBotColor = Qt::black;
 const QColor playerColor = Qt::red;
 const QColor frozenColor = Qt::blue;
 
 const QColor backgroundColor = Qt::white;
 const QColor wallColor = Qt::gray;
 const QColor bulletColor = Qt::green;
+
+const int infEficency = 10000000;
 
 const int listX = (worldHeight+2)*cellSize+ 10;
 const int listY = 10;
@@ -64,7 +70,6 @@ enum Direction{
 
 enum ObjectType{
     OBJECT = 0,
-    EMPTY = 1,
     WALL = 2,
     TANK = 3
 };

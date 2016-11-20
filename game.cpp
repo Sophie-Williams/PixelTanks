@@ -36,7 +36,12 @@ Game::Game(QWidget *parent) :
     ui->BotsCountBox->setMinimum(1);
     ui->BotsCountBox->setMaximum(14);
 
+
+    ui->HeigthBox->setValue(40);
+    ui->WidthBox->setValue(30);
+    ui->BotsCountBox->setValue(50);
    // leaders = new QTableWidget(this);
+
 }
 
 Game::~Game()

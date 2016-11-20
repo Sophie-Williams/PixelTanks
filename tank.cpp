@@ -24,17 +24,18 @@ Tank::Tank(
       healthPoints(h)
 {
     delay = 0;
-    alive = 1;
+    //alive = 1;
     points = 0;
     name = na;
     shotDelay = 0;
     for(int i=0;i<4;++i)
         attackDelay[i] = 0;
-
+    respawnDelay = 0;
 }
 
 Tank::~Tank(){
-    delete strategy;
+    if(strategy!=NULL)
+        delete strategy;
 }
 
 Direction Tank::GetDirection(){return direction;}
@@ -129,8 +130,7 @@ Move Tank::GetMove(World * world){
     }
 
     if(color == frozenColor)
-        color = (PlayerStrategy::GetInstance() == strategy)? playerColor : tankColor;
-
+        color = oldColor;
     if(shotDelay>0)
         --shotDelay;
 
@@ -168,13 +168,33 @@ void Tank::SetDelay(int d){
 
 void Tank::TakeDamage(int d){
     healthPoints-=d;
-    if(healthPoints<=0)
-        alive = 0;
+    if(healthPoints<=0){
+        //alive = 0;
+        respawnDelay = defaultRespawnDelay;
+    }
 }
 
 QString Tank::GetInfo(){
     QString r = name;
-   // while(r.length()<20)r = r + " ";
     r += QString(to_string(points).c_str());
     return r;
 }
+
+void Tank::SetColor(QColor c){
+    if(color!= frozenColor)
+        oldColor = color;
+    color = c;
+}
+
+void Tank::AddPoints(int p){
+     points+=p;
+    if(strategy!=NULL)
+        strategy->AddPoints(p);
+}
+
+bool Tank::IsAlive(){
+    return (respawnDelay == 0);}
+
+bool Tank::Respawn(){
+    return --respawnDelay == 0;}
+

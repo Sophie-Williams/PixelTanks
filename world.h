@@ -6,24 +6,31 @@
 using std::vector;
 
 #include "object.h"
-//#include "tank.h"
-//#include "bullet.h"
 
+#include "neuralnetwork.h"
+#include "tank.h"
+#include "bullet.h"
 class World
 {
 protected:
     vector<vector<Object*> > map;
-    vector<Object*> tanks;
-    vector<Object*> bullets;
+    vector<Tank*> tanks;
+    vector<Bullet*> bullets;
+    vector<NeuralNetwork*> neuroNets;
+    int timer;
 public:
     World(int heigth = worldHeight,int width = worldWidth,int bots = botsCount,bool player = false);
     ~World();
     void RefreshWorld(QPainter*);
     void ProccesBullets();
     void ProccesTanks();
+    void Selection();
+
     ObjectType GetObjectType(int x,int y){return map[x][y]->GetObjectType();}
 
     QString GetLeadersTable();
+
+    QPoint FindEmptyCell();
 };
 
 #endif // WORLD_H

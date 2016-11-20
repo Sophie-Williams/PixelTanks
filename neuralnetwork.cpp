@@ -10,13 +10,54 @@ using std::deque;
 #include<iostream>
 using std::cout;
 
+#include <map>
+using std::map;
+
 NeuralNetwork::NeuralNetwork()
 {
 
 }
 
-NeuralNetwork::~NeuralNetwork(){
+NeuralNetwork::NeuralNetwork(const NeuralNetwork& a){
+    inputSize = a.inputSize;
+    outputSize = a.outputSize;
+    neurons = vector< Neuron*> (a.neurons.size());
+    int to;
+    Synapse *s;
+    map<Synapse*,int> unused;
+    unused.clear();
+    vector<Synapse*> in,out;
+    int pos;
+    for(int i=0;i<a.neurons.size();++i)
+    {
+        in = a.neurons[i]->GetInput();
+        out = a.neurons[i]->GetOutput();
 
+        neurons[i] = new Neuron();
+        for(int j = in.size()-1;j>=0;--j)
+        {
+            pos = unused[in[j]];
+            //cout<<pos<<' ';
+            unused.erase(in[j]);
+            s = new Synapse();
+            neurons[pos]->AddOutputSynapse(s);
+            neurons[i]->AddInputSynapse(s);
+        }
+
+        for(int j=out.size()-1;j>=0;--j)
+            unused[out[j]] = i;
+    }
+}
+
+NeuralNetwork::~NeuralNetwork(){
+    vector<Synapse*> in;
+    for(int i=neurons.size()-1;i>=0;--i){
+       /* in = neurons[i]->GetInput();
+        for(int i=in.size()-1;i>=0;--i)
+            delete in[i];*/
+        delete neurons[i];
+    }
+    neurons.clear();
 }
 
 NeuralNetwork::NeuralNetwork(vector<int> sizes){
@@ -25,18 +66,33 @@ NeuralNetwork::NeuralNetwork(vector<int> sizes){
     inputSize = sizes[0];
     outputSize = sizes[sizes.size()-1];
 
-    neurons = vector<vector<Neuron*> > (sizes.size(),vector<Neuron*>());
+    int sum = 0;
+    for(int i=0;i<sizes.size();++i)
+        sum+=sizes[i];
+
+    neurons = vector<Neuron*>  (sum);
+
+    int position = 0;
+
     for(int i=0;i<inputSize;++i)
-        neurons[0].push_back(new Neuron());
+        neurons[position++] = new Neuron();
 
     Synapse *s;
-    for(unsigned i=1;i<sizes.size();++i)
+    int previousBegin = 0;
+    int curentBegin = position;
+    for(unsigned i=1;i<sizes.size();++i){
         for(int j=0;j<sizes[i];++j){
-            neurons[i].push_back(new Neuron());
-            for(unsigned g=0;g<neurons[i-1].size();++g){
+            neurons[position] = new Neuron();
+            for(int g=previousBegin;g<curentBegin;++g){
                 s = new Synapse(1.*(rand()%10));
-                neurons[i-1][g]->AddOutputSynapse(s);
-                neurons[i][j]->AddInputSynapse(s);}}
+                neurons[g]->AddOutputSynapse(s);
+                neurons[position]->AddInputSynapse(s);
+            }
+            ++position;
+        }
+        previousBegin = curentBegin;
+        curentBegin = position;
+    }
 
 
 
@@ -83,8 +139,8 @@ Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
 
 
     cout<<this<<'\n';
-    for(int i=0;i<input.size();++i)cout<<(int)input[i]<<' ';cout<<'\n';
-    for(int i=0;i<output.size();++i)cout<<(int)output[i]<<' ';cout<<'\n';
+    for(unsigned i=0;i<input.size();++i)cout<<(int)input[i]<<' ';cout<<'\n';
+    for(unsigned i=0;i<output.size();++i)cout<<(int)output[i]<<' ';cout<<'\n';
 
     Move a;
     int mPos = 0;
@@ -103,30 +159,105 @@ Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
     a.SetAttackType((AttackType)(mPos-5));
 
 
+    //if(a.GetAttack()!=WAIT)++points;
+
     return a;
 }
 
-vector<vector<Neuron*> > NeuralNetwork::GetNeurons(){
+vector<Neuron*>  NeuralNetwork::GetNeurons(){
     return neurons;
 }
 
 vector<double> NeuralNetwork::Calculate(vector<double> input){
-    for(int i = input.size()-1;i>=0;--i){
-        neurons[0][i]->SetValue(input[i]);
-        neurons[0][i]->SendValue();
+
+    if(input.size()!=inputSize)
+        return vector<double>();
+
+    int i=0;
+
+    for(;i<inputSize;++i){
+        neurons[i]->SetValue(input[i]);
+        neurons[i]->SendValue();
     }
 
     int end = neurons.size()-1;
 
-    for(int i=1;i<end;++i)
-        for(unsigned j=0;j<neurons[i].size();++j){
-            neurons[i][j]->CalculateValue();
-            neurons[i][j]->SendValue();}
+    for(;i<end-outputSize;++i){
+            neurons[i]->CalculateValue();
+            neurons[i]->SendValue();}
 
     vector<double> res;
 
-    for(int i=neurons[end].size()-1;i>=0;--i)
-        res.push_back(neurons[end][i]->CalculateValue());
+    for(;i<end;++i)
+        res.push_back(neurons[i]->CalculateValue());
 
     return res;
+}
+
+NeuralNetwork NeuralNetwork::operator=(const NeuralNetwork& a){
+    inputSize = a.inputSize;
+    outputSize = a.outputSize;
+    neurons = vector< Neuron*> (a.neurons.size());
+    int to;
+    Synapse *s;
+    map<Synapse*,int> unused;
+    unused.clear();
+    vector<Synapse*> in,out;
+    int pos;
+    for(int i=0;i<a.neurons.size();++i)
+    {
+        in = a.neurons[i]->GetInput();
+        out = a.neurons[i]->GetOutput();
+
+        neurons[i] = new Neuron();
+        for(int j = in.size()-1;j>=0;--j)
+        {
+            pos = unused[in[j]];
+            //cout<<pos<<' ';
+            unused.erase(in[j]);
+            s = new Synapse();
+            neurons[pos]->AddOutputSynapse(s);
+            neurons[i]->AddInputSynapse(s);
+        }
+
+        for(int j=out.size()-1;j>=0;--j)
+            unused[out[j]] = i;
+    }
+    return *this;
+}
+
+NeuralNetwork operator*(const NeuralNetwork& b,double w){
+    NeuralNetwork a = b;
+    vector<Synapse*> in;
+    for(int i=a.neurons.size()-1;i>=0;--i){
+        in = a.neurons[i]->GetInput();
+        for(int j=in.size()-1;j>=0;--j)
+            in[j]->SetWeight(in[j]->GetWeight()*w);
+    }
+    return a;
+}
+
+NeuralNetwork operator/(const NeuralNetwork& b,double w){
+    NeuralNetwork a = b;
+    if(w==0)
+        return a;
+    return a*(1./w);
+}
+
+NeuralNetwork operator+(const NeuralNetwork& a, const NeuralNetwork& b){
+    NeuralNetwork c = b;
+    if(a.neurons.size()!=b.neurons.size())
+        return c;
+
+    vector<Synapse*> in1,in2,in3;
+    for(int i=a.neurons.size()-1;i>=0;--i){
+        in1 = a.neurons[i]->GetInput();
+        in2 = b.neurons[i]->GetInput();
+        in3 = c.neurons[i]->GetInput();
+        if(in1.size()!=in2.size())
+            return b;
+        for(int j=in1.size()-1;j>=0;--j)
+            in3[j]->SetWeight(in1[j]->GetWeight()+in2[j]->GetWeight());
+    }
+    return c;
 }

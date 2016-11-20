@@ -9,20 +9,25 @@ class NeuralNetwork : public Strategy
 {
     int inputSize;
     int outputSize;
-    vector<vector<Neuron*> > neurons;
+    vector<Neuron*> neurons;
 
 public:
     NeuralNetwork();
+    NeuralNetwork(const NeuralNetwork&);
     NeuralNetwork(vector<Neuron*>);
     NeuralNetwork(vector<int>);
     //NeuralNetwork(NeuralNetwork);
     virtual ~NeuralNetwork();
 
-    vector<vector<Neuron*> > GetNeurons();
+    vector<Neuron*>  GetNeurons();
 
     Move CalculateMove(World*,Tank*);
 
     vector<double> Calculate(vector<double>);
+    NeuralNetwork operator=(const NeuralNetwork&);
+    friend NeuralNetwork operator*(const NeuralNetwork&,double);
+    friend NeuralNetwork operator/(const NeuralNetwork&,double);
+    friend NeuralNetwork operator+(const NeuralNetwork&,const NeuralNetwork&);
 };
 
 #endif // NEURALNETWORK_H

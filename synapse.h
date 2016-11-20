@@ -1,7 +1,6 @@
 #ifndef SYNAPSE_H
 #define SYNAPSE_H
 
-
 class Synapse
 {
     double value;
@@ -10,6 +9,8 @@ class Synapse
 public:
     Synapse(double w = 0);
     void RecieveValue(double);
+    double GetWeight();
+    void SetWeight(double w);
     double GetValue();
 };
 

@@ -25,6 +25,9 @@ public:
 
     void RemoveInputSynapse(Synapse*);
     void RemoveOutputSynapse(Synapse*);
+
+    vector<Synapse*> GetInput(){return input;}
+    vector<Synapse*> GetOutput(){return output;}
 };
 
 #endif // NEURON_H

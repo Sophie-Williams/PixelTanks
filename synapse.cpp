@@ -20,3 +20,10 @@ double Synapse::GetValue(){
     return value*weight;
 }
 
+double Synapse::GetWeight(){
+    return weight;
+}
+
+void Synapse::SetWeight(double w){
+    weight = w;
+}

@@ -17,14 +17,14 @@ class Tank:public Object
     Strategy *strategy;
     int delay;
     int shotDelay;
-    int team;
+    //int team;
     int points;
     int healthPoints;
     Direction direction;
     QColor color;
-    bool alive;
+    QColor oldColor;
     QString name;
-
+    int respawnDelay;
     int attackDelay[4];
 
 public:
@@ -39,14 +39,14 @@ public:
     Direction GetDirection();
     int GetDelay();
     QColor GetColor();
-    void GetTeam();
+   // void GetTeam();
+    Strategy* GetStrategy(){return strategy;}
     Move GetMove(World*);
-
     void SetMove(Move);
     void SetStrategy(Strategy *s);
     void SetDirection(Direction);
     void SetDelay(int);
-    void SetColor(QColor c){color = c;}
+    void SetColor(QColor c);
 
 
     ObjectType GetObjectType();
@@ -54,13 +54,13 @@ public:
   //  Bullet* Procces();
     void Display(QPainter*);
     void erase();
-    bool IsAlive(){return alive;}
     void TakeDamage(int);
    // QPoint GetPosition();
-
+    bool IsAlive();
+    bool Respawn();
     void SetName(QString s){name = s;}
     int GetPoints(){return points;}
-    void AddPoints(int p){points+=p;}
+    void AddPoints(int p);
     QString GetName(){return name;}
     QString GetInfo();
 };
