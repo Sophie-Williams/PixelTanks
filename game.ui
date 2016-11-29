@@ -17,8 +17,8 @@
    <widget class="QGroupBox" name="SettingsBox">
     <property name="geometry">
      <rect>
-      <x>1010</x>
-      <y>30</y>
+      <x>1060</x>
+      <y>450</y>
       <width>141</width>
       <height>161</height>
      </rect>
@@ -122,6 +122,8 @@
      </property>
     </widget>
    </widget>
+   <zorder>SettingsBox</zorder>
+   <zorder>BotsCountLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

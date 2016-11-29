@@ -5,25 +5,22 @@ using namespace std;
 
 Synapse::Synapse(double w)
 {
-    weight = w;
+    weigth = w;
     value = 0;
 }
 
 void Synapse::RecieveValue(double d){
-  //  cout<<"Recieved "<<this<<' '<<d<<'\n';
     value = d;
 }
 
 double Synapse::GetValue(){
-  //  cout<<"Sended "<<this<<' '<<value*weight<<'\n';
-
-    return value*weight;
+    return value*weigth;
 }
 
-double Synapse::GetWeight(){
-    return weight;
+double Synapse::GetWeigth(){
+    return weigth;
 }
 
-void Synapse::SetWeight(double w){
-    weight = w;
+void Synapse::SetWeigth(double w){
+    weigth = w;
 }

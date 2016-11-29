@@ -39,7 +39,8 @@ NeuralNetwork::NeuralNetwork(const NeuralNetwork& a){
             pos = unused[in[j]];
             //cout<<pos<<' ';
             unused.erase(in[j]);
-            s = new Synapse();
+            s = new Synapse(in[j]->GetWeigth());
+            //s = new Synapse(rand()%21-10);
             neurons[pos]->AddOutputSynapse(s);
             neurons[i]->AddInputSynapse(s);
         }
@@ -84,7 +85,7 @@ NeuralNetwork::NeuralNetwork(vector<int> sizes){
         for(int j=0;j<sizes[i];++j){
             neurons[position] = new Neuron();
             for(int g=previousBegin;g<curentBegin;++g){
-                s = new Synapse(1.*(rand()%10));
+                s = new Synapse(1.*(rand()%21 - 10));
                 neurons[g]->AddOutputSynapse(s);
                 neurons[position]->AddInputSynapse(s);
             }
@@ -93,9 +94,6 @@ NeuralNetwork::NeuralNetwork(vector<int> sizes){
         previousBegin = curentBegin;
         curentBegin = position;
     }
-
-
-
 }
 
 Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
@@ -132,16 +130,16 @@ Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
             x+=dx[i];
             y+=dy[i];
         }
-        input.push_back(world->GetObjectType(x,y) == TANK);
+        input.push_back(2*(world->GetObjectType(x,y) == TANK) - 1);
         input.push_back(1./sqrt(1.*abs(tx-x+ty-y)));
     }
     vector<double> output = Calculate(input);
 
-
+/*
     cout<<this<<'\n';
     for(unsigned i=0;i<input.size();++i)cout<<(int)input[i]<<' ';cout<<'\n';
     for(unsigned i=0;i<output.size();++i)cout<<(int)output[i]<<' ';cout<<'\n';
-
+*/
     Move a;
     int mPos = 0;
     for(int i=1;i<5;++i)
@@ -232,7 +230,7 @@ NeuralNetwork operator*(const NeuralNetwork& b,double w){
     for(int i=a.neurons.size()-1;i>=0;--i){
         in = a.neurons[i]->GetInput();
         for(int j=in.size()-1;j>=0;--j)
-            in[j]->SetWeight(in[j]->GetWeight()*w);
+            in[j]->SetWeigth(in[j]->GetWeigth()*w);
     }
     return a;
 }
@@ -257,7 +255,7 @@ NeuralNetwork operator+(const NeuralNetwork& a, const NeuralNetwork& b){
         if(in1.size()!=in2.size())
             return b;
         for(int j=in1.size()-1;j>=0;--j)
-            in3[j]->SetWeight(in1[j]->GetWeight()+in2[j]->GetWeight());
+            in3[j]->SetWeigth(in1[j]->GetWeigth()+in2[j]->GetWeigth());
     }
     return c;
 }

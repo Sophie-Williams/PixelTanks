@@ -17,10 +17,10 @@ class Bullet:public Object
 public:
     //Bullet();
     Bullet(Tank* t,Attack a,QPoint p,Direction d);
+    virtual ~Bullet();
 
     bool Shift();
     void Display(QPainter* p);
-
   //  QPoint GetPosition(){return position;}
     void SetPosition(QPoint p){position = p;}
     int GetDamage(){return attack.GetDamage();}

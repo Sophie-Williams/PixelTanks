@@ -56,23 +56,33 @@ World::World(int heigth,int width,int bots,bool player)
         delete map[1][1];
         map[1][1] = new Tank(QPoint(1,1),PlayerStrategy::GetInstance(),UP,playerColor);
         tanks.push_back((Tank*)map[1][1]);
+        tanks[tanks.size()-1]->SetName("Player");
     }
 
 
 
-    int x,y;
+    //int x,y;
     Tank *t;
     QPoint p;
+    int neuroBotsCount = 10;
+    int simpleBotsCount = 10;
     for(int i=0;i<bots;++i){
 
         p = FindEmptyCell();
         if(rand()%4){
-        t =  new Tank(p,new NeuralNetwork(neuroNetConfiguration),LEFT,neuroBotColor);
-        neuroNets.push_back((NeuralNetwork*)(t->GetStrategy()));
+            t =  new Tank(p,new NeuralNetwork(neuroNetConfiguration),LEFT,neuroBotColor);
+            t->SetName("Neuro Bot"+ QString(to_string(neuroBotsCount++).c_str()));
+            neuroNets.push_back((NeuralNetwork*)(t->GetStrategy()));
+
         }
-        else t = new Tank(p,new DefaultStrategy(),LEFT,tankColor);
+        else {
+            t = new Tank(p,new DefaultStrategy(),LEFT,tankColor);
+             t->SetName("SimpleBot"+ QString(to_string(simpleBotsCount++).c_str()));
+        }
+
         map[p.x()][p.y()] = t;
         tanks.push_back(t);
+
     }
 
 
@@ -99,10 +109,8 @@ World::~World(){
     timer = 0;
 }
 
-bool comp(Object* a,Object* b){
-    Tank *x,*y;
-    x = (Tank*)a;
-    y = (Tank*)b;
+bool comp(Tank* x,Tank* y){
+
     return x->GetPoints()>y->GetPoints();
 }
 
@@ -138,7 +146,7 @@ void World::ProccesBullets(){
                 break;}
             case WALL:{
                 Wall *w = (Wall*)map[pos.x()][pos.y()];
-                if(w->TakeDamage(b->GetDamage())){
+                if(b->GetAttackType()!=WALLING && w->TakeDamage(b->GetDamage())){
                     delete w;
                     map[pos.x()][pos.y()] = new Object(pos);
                 }
@@ -178,6 +186,7 @@ void World::ProccesTanks(){
             }
             else continue;
         }
+
         Move move = tank->GetMove(this);
         QPoint newPosition = tank->GetPosition();
         if(tank->GetDirection() == move.GetDirection() || move.GetDirection() == NONE){
@@ -198,7 +207,8 @@ void World::ProccesTanks(){
                 break;
             }
             if(map[newPosition.x()][newPosition.y()]->GetObjectType() == OBJECT){
-                tank->AddPoints(100);
+                tank->AddPoints(10);
+                //move points
                 delete map[newPosition.x()][newPosition.y()];
                 map[newPosition.x()][newPosition.y()] = tank;
                 map[tank->GetPosition().x()][tank->GetPosition().y()] =
@@ -256,6 +266,10 @@ void World::RefreshWorld(QPainter* painter){
         timer = 0;
         Selection();
     }
+
+    for(int i=0;i<min(tanks.size(),40);++i)
+        painter->drawText(map.size()*cellSize,10*(i+1),tanks[i]->GetInfo());
+
 }
 
 QString World::GetLeadersTable(){
@@ -264,7 +278,6 @@ QString World::GetLeadersTable(){
         a += ((Tank*)tanks[i])->GetInfo()+"\n";
 
     return a;
-
 }
 
 bool neuroNetsCompare(NeuralNetwork *a, NeuralNetwork *b){
@@ -279,8 +292,8 @@ void World::Selection(){
         if(i%2){
             NeuralNetwork q = *neuroNets[rand()%(size/2)]+
                     *neuroNets[rand()%(size/2)];
-
-        *neuroNets[i]  = q/2;}
+            //delete neuroNets[i];
+            *neuroNets[i]  = (q/2);}
         else
         {
             delete neuroNets[i];
@@ -289,4 +302,6 @@ void World::Selection(){
     }
     for(int i=0;i<size;++i)
         neuroNets[i]->SetPoints(0);
+
+    std::cerr << "Selection done\n";
 }

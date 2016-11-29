@@ -170,13 +170,14 @@ void Tank::TakeDamage(int d){
     healthPoints-=d;
     if(healthPoints<=0){
         //alive = 0;
+        healthPoints = 0;
         respawnDelay = defaultRespawnDelay;
     }
 }
 
 QString Tank::GetInfo(){
     QString r = name;
-    r += QString(to_string(points).c_str());
+    r += " "+QString(to_string(points).c_str());
     return r;
 }
 
@@ -196,5 +197,9 @@ bool Tank::IsAlive(){
     return (respawnDelay == 0);}
 
 bool Tank::Respawn(){
-    return --respawnDelay == 0;}
-
+    if(--respawnDelay == 0){
+        healthPoints =  defaultHealthPoints;
+        return 1;
+    }
+    return 0;
+}

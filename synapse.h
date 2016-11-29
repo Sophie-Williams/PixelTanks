@@ -4,13 +4,13 @@
 class Synapse
 {
     double value;
-    double weight;
+    double weigth;
 
 public:
     Synapse(double w = 0);
     void RecieveValue(double);
-    double GetWeight();
-    void SetWeight(double w);
+    double GetWeigth();
+    void SetWeigth(double w);
     double GetValue();
 };
 

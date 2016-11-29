@@ -33,6 +33,11 @@ Bullet::Bullet(Tank* t,Attack a, QPoint p, Direction d)
     way = 0;
 }
 
+Bullet::~Bullet(){
+
+}
+
+
 bool Bullet::Shift(){
     position+=moveVector;
     way+=abs(moveVector.x()+moveVector.y());

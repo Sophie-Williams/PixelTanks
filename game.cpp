@@ -78,6 +78,7 @@ void Game::initTimer(){
 }
 
 void Game::refreshWorld(){
+    std::cerr << "ref\n";
   PlayerStrategy::GetInstance()->SetKeys(keys);
   keys.clear();
   update();
