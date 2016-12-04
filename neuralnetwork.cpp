@@ -10,15 +10,14 @@ using std::deque;
 #include<iostream>
 using std::cout;
 
+#include<cstdio>
+
 #include <map>
 using std::map;
 
-NeuralNetwork::NeuralNetwork()
-{
+NeuralNetwork::NeuralNetwork():Strategy(){}
 
-}
-
-NeuralNetwork::NeuralNetwork(const NeuralNetwork& a){
+NeuralNetwork::NeuralNetwork(const NeuralNetwork& a):Strategy(){
     inputSize = a.inputSize;
     outputSize = a.outputSize;
     neurons = vector< Neuron*> (a.neurons.size());
@@ -39,7 +38,7 @@ NeuralNetwork::NeuralNetwork(const NeuralNetwork& a){
             pos = unused[in[j]];
             //cout<<pos<<' ';
             unused.erase(in[j]);
-            s = new Synapse(in[j]->GetWeigth());
+            s = new Synapse(in[j]->GetWeight());
             //s = new Synapse(rand()%21-10);
             neurons[pos]->AddOutputSynapse(s);
             neurons[i]->AddInputSynapse(s);
@@ -51,7 +50,7 @@ NeuralNetwork::NeuralNetwork(const NeuralNetwork& a){
 }
 
 NeuralNetwork::~NeuralNetwork(){
-    vector<Synapse*> in;
+    //vector<Synapse*> in;
     for(int i=neurons.size()-1;i>=0;--i){
        /* in = neurons[i]->GetInput();
         for(int i=in.size()-1;i>=0;--i)
@@ -61,7 +60,7 @@ NeuralNetwork::~NeuralNetwork(){
     neurons.clear();
 }
 
-NeuralNetwork::NeuralNetwork(vector<int> sizes){
+NeuralNetwork::NeuralNetwork(vector<int> sizes):Strategy(){
     if(sizes.size()<2)
         return;
     inputSize = sizes[0];
@@ -96,6 +95,70 @@ NeuralNetwork::NeuralNetwork(vector<int> sizes){
     }
 }
 
+Direction transform(Direction need,Direction real) {
+    switch (real) {
+    case UP:
+        return need;
+        break;
+    case RIGHT:
+        switch (need) {
+        case UP:
+            return RIGHT;
+            break;
+        case DOWN:
+            return LEFT;
+            break;
+        case LEFT:
+            return UP;
+            break;
+        case RIGHT:
+            return DOWN;
+            break;
+        default:
+            break;
+        }
+        break;
+    case LEFT:
+        switch (need) {
+        case UP:
+            return LEFT;
+            break;
+        case DOWN:
+            return RIGHT;
+            break;
+        case LEFT:
+            return DOWN;
+            break;
+        case RIGHT:
+            return UP;
+            break;
+        default:
+            break;
+        }
+        break;
+    case DOWN:
+        switch (need) {
+        case UP:
+            return DOWN;
+            break;
+        case DOWN:
+            return UP;
+            break;
+        case LEFT:
+            return RIGHT;
+            break;
+        case RIGHT:
+            return LEFT;
+            break;
+        default:
+            break;
+        }
+    default:
+        break;
+    }
+    return NONE;
+}
+
 Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
     vector<double> input;
     int x,y,tx,ty;
@@ -105,21 +168,22 @@ Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
 
     switch (tank->GetDirection()) {
     case UP:
-        dx = {-1,0,0,1};
-        dy = {0,1,-1,0};
-        break;
-    case DOWN:
-        dx = {1,0,0,-1};
-        dy = {0,1,-1,0};
-        break;
-    case LEFT:
-        dy = {-1,0,0,1};
-        dx = {0,1,-1,0};
+        dx = {-1,0,1,0};
+        dy = {0,1,0,-1};
         break;
     case RIGHT:
-        dy = {1,0,0,-1};
-        dx = {0,1,-1,0};
+        dy = {0,1,0,-1};
+        dx = {1,0,-1,0};
         break;
+    case DOWN:
+        dx = {1,0,-1,0};
+        dy = {0,-1,0,1};
+        break;
+    case LEFT:
+        dy = {0,-1,0,1};
+        dx = {-1,0,1,0};
+        break;
+
     default:
         break;
     }
@@ -135,18 +199,13 @@ Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
     }
     vector<double> output = Calculate(input);
 
-/*
-    cout<<this<<'\n';
-    for(unsigned i=0;i<input.size();++i)cout<<(int)input[i]<<' ';cout<<'\n';
-    for(unsigned i=0;i<output.size();++i)cout<<(int)output[i]<<' ';cout<<'\n';
-*/
     Move a;
     int mPos = 0;
     for(int i=1;i<5;++i)
         if(output[i]>output[mPos])
             mPos = i;
 
-    a.SetDirection(Direction(mPos));
+    a.SetDirection(transform(Direction(mPos),tank->GetDirection()));
 
 
     mPos = 5;
@@ -156,10 +215,7 @@ Move NeuralNetwork::CalculateMove(World* world, Tank* tank){
 
     a.SetAttackType((AttackType)(mPos-5));
 
-
-    //if(a.GetAttack()!=WAIT)++points;
-
-    return a;
+    return move = a;
 }
 
 vector<Neuron*>  NeuralNetwork::GetNeurons(){
@@ -230,7 +286,7 @@ NeuralNetwork operator*(const NeuralNetwork& b,double w){
     for(int i=a.neurons.size()-1;i>=0;--i){
         in = a.neurons[i]->GetInput();
         for(int j=in.size()-1;j>=0;--j)
-            in[j]->SetWeigth(in[j]->GetWeigth()*w);
+            in[j]->SetWeight(in[j]->GetWeight()*w);
     }
     return a;
 }
@@ -255,7 +311,32 @@ NeuralNetwork operator+(const NeuralNetwork& a, const NeuralNetwork& b){
         if(in1.size()!=in2.size())
             return b;
         for(int j=in1.size()-1;j>=0;--j)
-            in3[j]->SetWeigth(in1[j]->GetWeigth()+in2[j]->GetWeigth());
+            in3[j]->SetWeight(in1[j]->GetWeight()+in2[j]->GetWeight());
     }
     return c;
+}
+
+void NeuralNetwork::LoadConfiguration(string filename){
+    freopen(filename.c_str(),"r",stdin);
+    int t;
+    for(int i=0;i<neurons.size();++i){
+        for(int j=0;j<neurons[i]->GetOutput().size();++j){
+            if(!scanf("%d",&t))
+                return;
+            neurons[i]->GetOutput()[j]->SetWeight(t);
+        }
+    }
+    fclose(stdin);
+}
+
+void NeuralNetwork::SaveConfiguration(string filename){
+    freopen(filename.c_str(),"w",stdout);
+    int t;
+    for(int i=0;i<neurons.size();++i){
+        for(int j=0;j<neurons[i]->GetOutput().size();++j){
+            printf("%d ",(int)neurons[i]->GetOutput()[j]->GetWeight());
+        }
+        printf("\n");
+    }
+    fclose(stdout);
 }

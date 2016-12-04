@@ -48,7 +48,14 @@ bool Bullet::Shift(){
 
 void Bullet::Display(QPainter *p){
     QPen pen(bulletColor);
-    QBrush brush(bulletColor);
+
+
+    QBrush brush(
+                (attack.GetType() == SIMPLE)?
+                    bulletColor:
+                    ((attack.GetType() == FREEZING)?
+                         Qt::blue:
+                         Qt::gray));
 
     p->setPen(pen);
     p->setBrush(brush);

@@ -146,7 +146,8 @@ Move Tank::GetMove(World * world){
 
     if(strategy!=NULL){
         delay = moveDelay;
-        Move m = strategy->CalculateMove(world,this);
+        strategy->CalculateMove(world,this);
+        Move m = strategy->GetMove();
         if(shotDelay>0)
             m.SetAttackType(WAIT);
         if(m.GetAttack()!=WAIT){

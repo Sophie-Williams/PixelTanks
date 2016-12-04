@@ -15,8 +15,17 @@ const int turnDelay = 7;
 const int cellSize = 22;
 const int paintSize = 11;
 const int defaultShotDelay = 2;
-const int defaultRespawnDelay = 30;
+const int defaultRespawnDelay = 100;
 
+const int defaultFuel = 15000;
+const int waitFuel = 100;
+
+const int defaultKillFuel = 500;
+const int defaultDamageFuel = 10;
+const int defaultMoveFuel = 10;
+const int defaultDeathFuel = 700;
+const int defaultWaitFuel = 20;
+const int defaultShotFuel = 50;
 
 const int killPoints = 100;
 

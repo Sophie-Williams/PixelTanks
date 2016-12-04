@@ -5,7 +5,7 @@ using namespace std;
 
 Synapse::Synapse(double w)
 {
-    weigth = w;
+    weight = w;
     value = 0;
 }
 
@@ -14,13 +14,13 @@ void Synapse::RecieveValue(double d){
 }
 
 double Synapse::GetValue(){
-    return value*weigth;
+    return value*weight;
 }
 
-double Synapse::GetWeigth(){
-    return weigth;
+double Synapse::GetWeight(){
+    return weight;
 }
 
-void Synapse::SetWeigth(double w){
-    weigth = w;
+void Synapse::SetWeight(double w){
+    weight = w;
 }

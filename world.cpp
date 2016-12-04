@@ -85,8 +85,8 @@ World::World(int heigth,int width,int bots,bool player)
 
     }
 
-
-    for(int i=0;i<(width*heigth-bots)/4;++i){
+//walls
+    for(int i=0;i<(width*heigth-bots)/4*0;++i){
         p = FindEmptyCell();
         map[p.x()][p.y()] = new Wall(p);
 
@@ -102,7 +102,7 @@ World::~World(){
     }
     map.clear();
     tanks.clear();
-    for(int i=0;i<bullets.size();++i)
+    for(unsigned i=0;i<bullets.size();++i)
         delete bullets[i];
     bullets.clear();
     neuroNets.clear();
@@ -179,14 +179,12 @@ void World::ProccesTanks(){
         if(!tank->IsAlive()){
             if(tank->Respawn())
             {
-                int x,y;
                 p = FindEmptyCell();
                 tank->SetPosition(p);
                 map[p.x()][p.y()] = tank;
             }
             else continue;
         }
-
         Move move = tank->GetMove(this);
         QPoint newPosition = tank->GetPosition();
         if(tank->GetDirection() == move.GetDirection() || move.GetDirection() == NONE){
@@ -207,7 +205,7 @@ void World::ProccesTanks(){
                 break;
             }
             if(map[newPosition.x()][newPosition.y()]->GetObjectType() == OBJECT){
-                tank->AddPoints(10);
+                //tank->AddPoints(10);
                 //move points
                 delete map[newPosition.x()][newPosition.y()];
                 map[newPosition.x()][newPosition.y()] = tank;
@@ -242,9 +240,33 @@ void World::ProccesTanks(){
             }
             bullets.push_back(new Bullet(tank,attack,toSimpleCoordinats(tank->GetPosition()),tank->GetDirection()));
         }
+      //  if(i==0)
+     //   std::cerr<<tank->GetFuel()<<'\n';
     }
 }
 
+bool neuroNetsCompare(NeuralNetwork *a, NeuralNetwork *b){
+    return a->GetPoints()>b->GetPoints();
+}
+
+Strategy* World::newRandomStrategy(){
+    if(rand()%4)
+        return newNeuroStrategy();
+    return newDefaultStrategy();
+}
+
+Strategy* World::newNeuroStrategy(){
+    if(rand()%3){
+        int x = rand()%neuroNets.size(),
+            y = rand()%neuroNets.size();
+        return new NeuralNetwork((*neuroNets[x]+*neuroNets[y])/2);
+    }
+    return new NeuralNetwork(neuroNetConfiguration);
+}
+
+Strategy* World::newDefaultStrategy(){
+    return new DefaultStrategy();
+}
 
 void World::RefreshWorld(QPainter* painter){
 
@@ -261,15 +283,38 @@ void World::RefreshWorld(QPainter* painter){
     stable_sort(tanks.begin(),tanks.end(),comp);
     QPen pen(Qt::black);
     painter->setPen(pen);
-    ++timer;
-    if(timer == selectionInterval){
-        timer = 0;
-        Selection();
-    }
+   // stable_sort(neuroNets.begin(),neuroNets.end(),neuroNetsCompare);
+
+
+    Strategy *s;
+    for(int i=tanks.size()-1;i>=0;--i)
+        if(tanks[i]->GetStrategy()->NeedsReset()){
+            s = tanks[i]->GetStrategy();
+
+            vector<NeuralNetwork*>::iterator it = find(neuroNets.begin(),neuroNets.end(),s);
+            if(it!=neuroNets.end())
+            {
+                neuroNets.erase(it);
+                tanks[i]->SetStrategy(newNeuroStrategy());
+                neuroNets.push_back((NeuralNetwork*)tanks[i]->GetStrategy());
+            }
+            else
+                tanks[i]->SetStrategy(newDefaultStrategy());
+            delete s;
+        }
 
     for(int i=0;i<min(tanks.size(),40);++i)
         painter->drawText(map.size()*cellSize,10*(i+1),tanks[i]->GetInfo());
 
+
+    for(int i=0;i<neuroNets.size();++i)
+        neuroNets[i]->SaveConfiguration(to_string(i));
+
+
+    if(++timer == selectionInterval){
+        timer = 0;
+        Selection();
+    }
 }
 
 QString World::GetLeadersTable(){
@@ -280,13 +325,11 @@ QString World::GetLeadersTable(){
     return a;
 }
 
-bool neuroNetsCompare(NeuralNetwork *a, NeuralNetwork *b){
-    return a->GetPoints()>b->GetPoints();
-}
+
 
 void World::Selection(){
    // cout<<"Selection\n";
-    sort(neuroNets.begin(),neuroNets.end(),neuroNetsCompare);
+
     int size = neuroNets.size();
     for(int i=size/2;i<size;++i){
         if(i%2){
@@ -296,8 +339,8 @@ void World::Selection(){
             *neuroNets[i]  = (q/2);}
         else
         {
-            delete neuroNets[i];
-            neuroNets[i]  = new NeuralNetwork(neuroNetConfiguration);
+           // delete neuroNets[i];
+            *neuroNets[i]  = NeuralNetwork(neuroNetConfiguration);
         }
     }
     for(int i=0;i<size;++i)

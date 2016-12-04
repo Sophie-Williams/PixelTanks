@@ -17,7 +17,6 @@ class Tank:public Object
     Strategy *strategy;
     int delay;
     int shotDelay;
-    //int team;
     int points;
     int healthPoints;
     Direction direction;
@@ -63,6 +62,9 @@ public:
     void AddPoints(int p);
     QString GetName(){return name;}
     QString GetInfo();
+
+    int GetFuel(){
+        return ((strategy!=NULL)?strategy->GetFuel():0);}
 };
 
 #endif // TANK_H

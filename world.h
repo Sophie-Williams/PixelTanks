@@ -31,6 +31,10 @@ public:
     QString GetLeadersTable();
 
     QPoint FindEmptyCell();
+
+    Strategy* newRandomStrategy();
+    Strategy* newNeuroStrategy();
+    Strategy* newDefaultStrategy();
 };
 
 #endif // WORLD_H

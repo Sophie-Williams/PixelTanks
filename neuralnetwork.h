@@ -5,6 +5,9 @@
 
 #include "neuron.h"
 
+#include <string>
+using std::string;
+
 class NeuralNetwork : public Strategy
 {
     int inputSize;
@@ -28,6 +31,11 @@ public:
     friend NeuralNetwork operator*(const NeuralNetwork&,double);
     friend NeuralNetwork operator/(const NeuralNetwork&,double);
     friend NeuralNetwork operator+(const NeuralNetwork&,const NeuralNetwork&);
+    void LoadConfiguration(string filename);
+    void SaveConfiguration(string filename);
 };
+
+
+
 
 #endif // NEURALNETWORK_H
