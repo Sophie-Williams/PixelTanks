@@ -64,8 +64,8 @@ World::World(int heigth,int width,int bots,bool player)
     //int x,y;
     Tank *t;
     QPoint p;
-    int neuroBotsCount = 10;
-    int simpleBotsCount = 10;
+    neuroBotsCount = 0;
+    simpleBotsCount = 0;
     for(int i=0;i<bots;++i){
 
         p = FindEmptyCell();
@@ -86,7 +86,7 @@ World::World(int heigth,int width,int bots,bool player)
     }
 
 //walls
-    for(int i=0;i<(width*heigth-bots)/4*0;++i){
+    for(int i=0;i<(width*heigth-bots)/4;++i){
         p = FindEmptyCell();
         map[p.x()][p.y()] = new Wall(p);
 
@@ -240,8 +240,6 @@ void World::ProccesTanks(){
             }
             bullets.push_back(new Bullet(tank,attack,toSimpleCoordinats(tank->GetPosition()),tank->GetDirection()));
         }
-      //  if(i==0)
-     //   std::cerr<<tank->GetFuel()<<'\n';
     }
 }
 
@@ -303,7 +301,7 @@ void World::RefreshWorld(QPainter* painter){
             delete s;
         }
 
-    for(int i=0;i<min(tanks.size(),40);++i)
+    for(unsigned i=0;i<min(tanks.size(),40);++i)
         painter->drawText(map.size()*cellSize,10*(i+1),tanks[i]->GetInfo());
 
 
@@ -347,4 +345,35 @@ void World::Selection(){
         neuroNets[i]->SetPoints(0);
 
     std::cerr << "Selection done\n";
+}
+
+void World::AddSimpleBots(int c){
+    while(c--){
+        QPoint p = FindEmptyCell();
+        Tank* t = new Tank(
+                    p,
+                    newDefaultStrategy(),
+                    UP,
+                    Qt::yellow,
+                    defaultHealthPoints,
+                    "Simple Bot"+QString(to_string(neuroBotsCount++).c_str()));
+        map[p.x()][p.y()] = t;
+        tanks.push_back(t);
+    }
+}
+
+void World::AddNeuroBots(int c){
+    while(c--){
+        QPoint p = FindEmptyCell();
+        Tank* t = new Tank(
+                    p,
+                    newNeuroStrategy(),
+                    UP,
+                    neuroBotColor,
+                    defaultHealthPoints,
+                    "Neuro Bot "+QString(to_string(neuroBotsCount++).c_str()));
+        map[p.x()][p.y()] = t;
+        neuroNets.push_back((NeuralNetwork*)t->GetStrategy());
+        tanks.push_back(t);
+    }
 }

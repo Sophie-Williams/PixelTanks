@@ -33,14 +33,15 @@ Game::Game(QWidget *parent) :
     ui->WidthBox->setMinimum(15);
     ui->WidthBox->setMaximum(30);
 
-    ui->BotsCountBox->setMinimum(1);
-    ui->BotsCountBox->setMaximum(14);
+    ui->SimpleBotsCount->setMinimum(1);
+    ui->SimpleBotsCount->setMaximum(14);
+
+    ui->NeuroBotsCount->setMinimum(1);
+    ui->NeuroBotsCount->setMaximum(14);
 
 
     ui->HeigthBox->setValue(40);
     ui->WidthBox->setValue(30);
-    ui->BotsCountBox->setValue(50);
-   // leaders = new QTableWidget(this);
 
 }
 
@@ -91,7 +92,7 @@ void Game::on_StartGame_clicked()
     widget->InitMap(
                 ui->HeigthBox->value(),
                 ui->WidthBox->value(),
-                ui->BotsCountBox->value(),
+                5,
                 ui->EnablePlayer->isChecked()
                 );
 
@@ -105,10 +106,22 @@ void Game::on_StartGame_clicked()
 
 void Game::on_WidthBox_valueChanged(int a)
 {
-    ui->BotsCountBox->setMaximum(a*ui->HeigthBox->value()/16);
+    ui->SimpleBotsCount->setMaximum(a*ui->HeigthBox->value()/16);
+    ui->NeuroBotsCount->setMaximum(a*ui->HeigthBox->value()/16);
 }
 
 void Game::on_HeigthBox_valueChanged(int a)
 {
-    ui->BotsCountBox->setMaximum(ui->WidthBox->value()*a/16);
+    ui->SimpleBotsCount->setMaximum(a*ui->WidthBox->value()/16);
+    ui->NeuroBotsCount->setMaximum(a*ui->WidthBox->value()/16);
+}
+
+void Game::on_AddNeuroBots_clicked()
+{
+    widget->AddNeuroBots(ui->NeuroBotsCount->value());
+}
+
+void Game::on_AddSimpleBots_clicked()
+{
+    widget->AddSimpleBots(ui->SimpleBotsCount->value());
 }

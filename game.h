@@ -46,6 +46,10 @@ private slots:
 
     void on_HeigthBox_valueChanged(int arg1);
 
+    void on_AddNeuroBots_clicked();
+
+    void on_AddSimpleBots_clicked();
+
 private:
     Ui::Game *ui;
     QTableView *leaders;

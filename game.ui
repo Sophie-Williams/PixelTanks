@@ -17,38 +17,15 @@
    <widget class="QGroupBox" name="SettingsBox">
     <property name="geometry">
      <rect>
-      <x>1060</x>
-      <y>450</y>
+      <x>1020</x>
+      <y>440</y>
       <width>141</width>
-      <height>161</height>
+      <height>171</height>
      </rect>
     </property>
     <property name="title">
      <string>Settings</string>
     </property>
-    <widget class="QLabel" name="BotsCountLabel">
-     <property name="geometry">
-      <rect>
-       <x>2</x>
-       <y>20</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Bots count</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="BotsCountBox">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>20</y>
-       <width>48</width>
-       <height>27</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QSpinBox" name="WidthBox">
      <property name="geometry">
       <rect>
@@ -122,8 +99,52 @@
      </property>
     </widget>
    </widget>
-   <zorder>SettingsBox</zorder>
-   <zorder>BotsCountLabel</zorder>
+   <widget class="QPushButton" name="AddSimpleBots">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>410</y>
+      <width>121</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add simple bots</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="SimpleBotsCount">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>410</y>
+      <width>48</width>
+      <height>27</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="AddNeuroBots">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>380</y>
+      <width>121</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add neuro bots</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="NeuroBotsCount">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>380</y>
+      <width>48</width>
+      <height>27</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

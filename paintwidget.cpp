@@ -36,3 +36,12 @@ void PaintWidget::InitMap(int _heigth,int _width,int _bots,bool player){
     resize((_heigth+8)*cellSize,(_width+2)*cellSize);
     move(0,0);
 }
+
+
+void PaintWidget::AddSimpleBots(int c){
+    world->AddSimpleBots(c);
+}
+
+void PaintWidget::AddNeuroBots(int c){
+    world->AddNeuroBots(c);
+}

@@ -17,6 +17,9 @@ public:
     void InitMap(int height,int width,int bots,bool player);
     ~PaintWidget();
 
+    void AddSimpleBots(int);
+    void AddNeuroBots(int);
+
 protected:
     void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
 signals:

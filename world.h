@@ -18,6 +18,8 @@ protected:
     vector<Bullet*> bullets;
     vector<NeuralNetwork*> neuroNets;
     int timer;
+    int simpleBotsCount;
+    int neuroBotsCount;
 public:
     World(int heigth = worldHeight,int width = worldWidth,int bots = botsCount,bool player = false);
     ~World();
@@ -35,6 +37,9 @@ public:
     Strategy* newRandomStrategy();
     Strategy* newNeuroStrategy();
     Strategy* newDefaultStrategy();
+
+    void AddSimpleBots(int);
+    void AddNeuroBots(int);
 };
 
 #endif // WORLD_H

@@ -331,7 +331,7 @@ void NeuralNetwork::LoadConfiguration(string filename){
 
 void NeuralNetwork::SaveConfiguration(string filename){
     freopen(filename.c_str(),"w",stdout);
-    int t;
+    //int t;
     for(int i=0;i<neurons.size();++i){
         for(int j=0;j<neurons[i]->GetOutput().size();++j){
             printf("%d ",(int)neurons[i]->GetOutput()[j]->GetWeight());
