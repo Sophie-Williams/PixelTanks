@@ -9,10 +9,11 @@ Attack::Attack(
         AttackType t)
     :
       maxDelay(d),
-      freeze(f),
+
+      curentDelay(0),
+       freeze(f),
       damage(dm),
       length(l),
       speed(s),
-      type(t),
-      curentDelay(0)
+      type(t)
         {}

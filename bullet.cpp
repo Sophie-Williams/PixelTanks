@@ -8,10 +8,9 @@ Bullet::Bullet()
 
 Bullet::Bullet(Tank* t,Attack a, QPoint p, Direction d)
     :
-
-      owner(t),
+      Object(p),
       attack(a),
-      Object(p)
+      owner(t)
 {
     switch (d) {
     case UP:

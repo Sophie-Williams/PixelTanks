@@ -17,7 +17,7 @@ const int paintSize = 11;
 const int defaultShotDelay = 2;
 const int defaultRespawnDelay = 100;
 
-const int defaultFuel = 15000;
+const int defaultFuel = 5000;
 const int waitFuel = 100;
 
 const int defaultKillFuel = 500;

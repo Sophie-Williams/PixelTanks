@@ -24,7 +24,7 @@ PlayerStrategy* PlayerStrategy::GetInstance(){
 
 void PlayerStrategy::SetKeys(vector<char> v){
     keySequence = v;
-    for(int i=0;i<keySequence.size();++i){
+    for(size_t i=0;i<keySequence.size();++i){
         switch (keySequence[i]) {
         case 'w':
         case 'W':

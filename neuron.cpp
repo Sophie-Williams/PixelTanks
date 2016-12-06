@@ -10,7 +10,8 @@ Neuron::Neuron()
 }
 
 Neuron::~Neuron(){
-    for(int i=0;i<input.size();++i)
+#pragma omp parallel for
+    for(size_t i=0;i<input.size();++i)
         delete input[i];
     input.clear();
     output.clear();
@@ -30,7 +31,7 @@ void Neuron::SetValue(double v){
 
 double Neuron::CalculateValue(){
     value = 0;
-    for(int i=0;i<input.size();++i)
+    for(size_t i=0;i<input.size();++i)
         value+=input[i]->GetValue();
 
    // cout<<"Neuron "<<this<<' '<<value<<'\n';
@@ -38,6 +39,6 @@ double Neuron::CalculateValue(){
 }
 
 void Neuron::SendValue(){
-    for(int i=0;i<output.size();++i)
+    for(size_t i=0;i<output.size();++i)
         output[i]->RecieveValue(value);
 }

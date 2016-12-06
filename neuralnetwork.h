@@ -10,8 +10,8 @@ using std::string;
 
 class NeuralNetwork : public Strategy
 {
-    int inputSize;
-    int outputSize;
+    size_t inputSize;
+    size_t outputSize;
     vector<Neuron*> neurons;
 
 public:

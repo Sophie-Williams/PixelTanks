@@ -18,11 +18,12 @@ class Tank:public Object
     int delay;
     int shotDelay;
     int points;
-    int healthPoints;
+
     Direction direction;
     QColor color;
     QColor oldColor;
     QString name;
+    int healthPoints;
     int respawnDelay;
     int attackDelay[4];
 

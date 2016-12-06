@@ -13,13 +13,13 @@ protected:
 public:
     Object(QPoint p = QPoint(0,0));
 
-    ~Object();
+    virtual ~Object();
 
     virtual  ObjectType GetObjectType();
     QPoint GetPosition();
     virtual void Display(QPainter*);
     void SetPosition(QPoint);
-    virtual void erase();
+  //  virtual void erase();
 
 };
 

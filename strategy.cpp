@@ -1,12 +1,14 @@
 #include "strategy.h"
 
+
+
 Strategy::Strategy(){
     fuel = defaultFuel;
-    moveFuel = defaultMoveFuel;
-    damageFuel = defaultDamageFuel;
-    waitFuel = defaultWaitFuel;
-    shotFuel = defaultShotFuel;
-    deathFuel = defaultDeathFuel;
+    moveFuel = defaultMoveFuel *(80+rand()%40)/100;
+    damageFuel = defaultDamageFuel*(80+rand()%40)/100;
+    waitFuel = defaultWaitFuel*(80+rand()%40)/100;
+    shotFuel = defaultShotFuel*(80+rand()%40)/100;
+    deathFuel = defaultDeathFuel*(80+rand()%40)/100;
 }
 
 Strategy::~Strategy(){}

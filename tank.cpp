@@ -104,7 +104,7 @@ void Tank::Display(QPainter* painter){
 
     if(strategy == PlayerStrategy::GetInstance()){
         painter->setPen(QPen(Qt::black));
-        painter->drawText(10,(worldWidth+2)*cellSize+10,QString(to_string(healthPoints).c_str()));}
+        painter->drawText(10,(worldWidth+4)*cellSize+10,QString(to_string(healthPoints).c_str()));}
 }
 
 void Tank::SetStrategy(Strategy *s){
@@ -137,12 +137,6 @@ Move Tank::GetMove(World * world){
     for(int i=0;i<4;++i)
         if(attackDelay[i]>0)
             --attackDelay[i];
-/*
-    if(strategy == PlayerStrategy::GetInstance()){
-        for(int i=0;i<4;++i)std::cout<<attackDelay[i]<<' ';
-        std::cout<<delay<<' '<<shotDelay<<'\n';
-    }
-*/
 
     if(strategy!=NULL){
         delay = moveDelay;
@@ -170,7 +164,6 @@ void Tank::SetDelay(int d){
 void Tank::TakeDamage(int d){
     healthPoints-=d;
     if(healthPoints<=0){
-        //alive = 0;
         healthPoints = 0;
         respawnDelay = defaultRespawnDelay;
     }

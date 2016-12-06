@@ -21,13 +21,12 @@ NeuralNetwork::NeuralNetwork(const NeuralNetwork& a):Strategy(){
     inputSize = a.inputSize;
     outputSize = a.outputSize;
     neurons = vector< Neuron*> (a.neurons.size());
-    int to;
     Synapse *s;
     map<Synapse*,int> unused;
     unused.clear();
     vector<Synapse*> in,out;
     int pos;
-    for(int i=0;i<a.neurons.size();++i)
+    for(size_t i=0;i<a.neurons.size();++i)
     {
         in = a.neurons[i]->GetInput();
         out = a.neurons[i]->GetOutput();
@@ -50,13 +49,10 @@ NeuralNetwork::NeuralNetwork(const NeuralNetwork& a):Strategy(){
 }
 
 NeuralNetwork::~NeuralNetwork(){
-    //vector<Synapse*> in;
-    for(int i=neurons.size()-1;i>=0;--i){
-       /* in = neurons[i]->GetInput();
-        for(int i=in.size()-1;i>=0;--i)
-            delete in[i];*/
+    #pragma omp parallel for
+    for(int i=neurons.size()-1;i>=0;--i)
         delete neurons[i];
-    }
+
     neurons.clear();
 }
 
@@ -67,14 +63,14 @@ NeuralNetwork::NeuralNetwork(vector<int> sizes):Strategy(){
     outputSize = sizes[sizes.size()-1];
 
     int sum = 0;
-    for(int i=0;i<sizes.size();++i)
+    for(size_t i=0;i<sizes.size();++i)
         sum+=sizes[i];
 
     neurons = vector<Neuron*>  (sum);
 
     int position = 0;
 
-    for(int i=0;i<inputSize;++i)
+    for(size_t i=0;i<inputSize;++i)
         neurons[position++] = new Neuron();
 
     Synapse *s;
@@ -227,14 +223,14 @@ vector<double> NeuralNetwork::Calculate(vector<double> input){
     if(input.size()!=inputSize)
         return vector<double>();
 
-    int i=0;
+    size_t i=0;
 
     for(;i<inputSize;++i){
         neurons[i]->SetValue(input[i]);
         neurons[i]->SendValue();
     }
 
-    int end = neurons.size()-1;
+    size_t end = neurons.size()-1;
 
     for(;i<end-outputSize;++i){
             neurons[i]->CalculateValue();
@@ -252,13 +248,12 @@ NeuralNetwork NeuralNetwork::operator=(const NeuralNetwork& a){
     inputSize = a.inputSize;
     outputSize = a.outputSize;
     neurons = vector< Neuron*> (a.neurons.size());
-    int to;
     Synapse *s;
     map<Synapse*,int> unused;
     unused.clear();
     vector<Synapse*> in,out;
     int pos;
-    for(int i=0;i<a.neurons.size();++i)
+    for(size_t i=0;i<a.neurons.size();++i)
     {
         in = a.neurons[i]->GetInput();
         out = a.neurons[i]->GetOutput();
@@ -285,6 +280,7 @@ NeuralNetwork operator*(const NeuralNetwork& b,double w){
     vector<Synapse*> in;
     for(int i=a.neurons.size()-1;i>=0;--i){
         in = a.neurons[i]->GetInput();
+#pragma omp parallel for
         for(int j=in.size()-1;j>=0;--j)
             in[j]->SetWeight(in[j]->GetWeight()*w);
     }
@@ -303,13 +299,14 @@ NeuralNetwork operator+(const NeuralNetwork& a, const NeuralNetwork& b){
     if(a.neurons.size()!=b.neurons.size())
         return c;
 
-    vector<Synapse*> in1,in2,in3;
+    #pragma omp parallel for
     for(int i=a.neurons.size()-1;i>=0;--i){
+        vector<Synapse*> in1,in2,in3;
         in1 = a.neurons[i]->GetInput();
         in2 = b.neurons[i]->GetInput();
         in3 = c.neurons[i]->GetInput();
         if(in1.size()!=in2.size())
-            return b;
+            continue;
         for(int j=in1.size()-1;j>=0;--j)
             in3[j]->SetWeight(in1[j]->GetWeight()+in2[j]->GetWeight());
     }
@@ -319,8 +316,8 @@ NeuralNetwork operator+(const NeuralNetwork& a, const NeuralNetwork& b){
 void NeuralNetwork::LoadConfiguration(string filename){
     freopen(filename.c_str(),"r",stdin);
     int t;
-    for(int i=0;i<neurons.size();++i){
-        for(int j=0;j<neurons[i]->GetOutput().size();++j){
+    for(size_t i=0;i<neurons.size();++i){
+        for(size_t j=0;j<neurons[i]->GetOutput().size();++j){
             if(!scanf("%d",&t))
                 return;
             neurons[i]->GetOutput()[j]->SetWeight(t);
@@ -332,8 +329,8 @@ void NeuralNetwork::LoadConfiguration(string filename){
 void NeuralNetwork::SaveConfiguration(string filename){
     freopen(filename.c_str(),"w",stdout);
     //int t;
-    for(int i=0;i<neurons.size();++i){
-        for(int j=0;j<neurons[i]->GetOutput().size();++j){
+    for(size_t i=0;i<neurons.size();++i){
+        for(size_t j=0;j<neurons[i]->GetOutput().size();++j){
             printf("%d ",(int)neurons[i]->GetOutput()[j]->GetWeight());
         }
         printf("\n");

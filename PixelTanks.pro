@@ -50,3 +50,6 @@ HEADERS  += game.h \
 FORMS    += game.ui
 
 CONFIG += c++11
+
+QMAKE_CXXFLAGS+= -fopenmp
+QMAKE_LFLAGS +=  -fopenmp

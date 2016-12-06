@@ -51,7 +51,7 @@ Game::~Game()
 }
 
 void Game::paintEvent(QPaintEvent *event){
-   //if(event->isAccepted()){;}
+   // if(event->isAccepted()){;}
     PlayerStrategy::GetInstance()->SetKeys(keys);
 
 }
@@ -79,7 +79,7 @@ void Game::initTimer(){
 }
 
 void Game::refreshWorld(){
-    std::cerr << "ref\n";
+   // std::cerr << "ref\n";
   PlayerStrategy::GetInstance()->SetKeys(keys);
   keys.clear();
   update();

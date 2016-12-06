@@ -33,9 +33,6 @@ void Object::Display(QPainter* painter){
     painter->fillPath(path,QBrush(backgroundColor));
 }
 
-void Object::erase(){
-    this->~Object();
-}
 
 void Object::SetPosition(QPoint p){
     position = p;
