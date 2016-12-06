@@ -10,7 +10,7 @@ PaintWidget::PaintWidget(
     heigth = _heigth;
     width = _width;
     world = new World(_heigth,_width,_bots,player);
-    resize((_heigth+8)*cellSize,(_width+2)*cellSize);
+    resize((_heigth+9)*cellSize,(_width+2)*cellSize);
     move(0,0);
 
 }

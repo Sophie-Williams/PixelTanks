@@ -74,7 +74,7 @@ World::World(int heigth,int width,int bots,bool player)
         p = FindEmptyCell();
         if(rand()%4){
             t =  new Tank(p,new NeuralNetwork(neuroNetConfiguration),LEFT,neuroBotColor);
-            t->SetName("Neuro Bot"+ QString(to_string(neuroBotsCount++).c_str()));
+            t->SetName("NeuroBot "+ QString(to_string(neuroBotsCount++).c_str()));
             neuroNets.push_back((NeuralNetwork*)(t->GetStrategy()));
 
         }
@@ -142,6 +142,7 @@ void World::ProccesBullets(){
                     t->SetColor(frozenColor);
                 b->GetOwner()->AddPoints(b->GetDamage());
                 if(!t->IsAlive()){
+                    t->AddPoints(deathFine);
                     b->GetOwner()->AddPoints(killPoints);
                     map[pos.x()][pos.y()] =
                             new Object(QPoint(pos.x(),pos.y()));
@@ -153,7 +154,9 @@ void World::ProccesBullets(){
                 break;}
             case WALL:{
                 Wall *w = (Wall*)map[pos.x()][pos.y()];
-                if(b->GetAttackType()!=WALLING && w->TakeDamage(b->GetDamage())){
+                if(
+                       // b->GetAttackType()!=WALLING &&
+                        w->TakeDamage(b->GetDamage())){
                     delete w;
                     map[pos.x()][pos.y()] = new Object(pos);
                 }
@@ -350,7 +353,7 @@ void World::Selection(){
     for(int i=0;i<size;++i)
         neuroNets[i]->SetPoints(0);
 
-    std::cerr << "Selection done\n";
+   // std::cerr << "Selection done\n";
 }
 
 void World::AddSimpleBots(int c){
@@ -362,7 +365,7 @@ void World::AddSimpleBots(int c){
                     UP,
                     Qt::yellow,
                     defaultHealthPoints,
-                    "Simple Bot"+QString(to_string(neuroBotsCount++).c_str()));
+                    "SimpleBot"+QString(to_string(neuroBotsCount++).c_str()));
         map[p.x()][p.y()] = t;
         tanks.push_back(t);
     }
@@ -379,7 +382,7 @@ void World::AddNeuroBots(int c){
                     UP,
                     neuroBotColor,
                     defaultHealthPoints,
-                    "Neuro Bot "+QString(to_string(neuroBotsCount).c_str()));
+                    "NeuroBot "+QString(to_string(neuroBotsCount).c_str()));
         n->LoadConfiguration(to_string(neuroBotsCount++));
         map[p.x()][p.y()] = t;
         neuroNets.push_back(n);

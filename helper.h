@@ -17,7 +17,7 @@ const int paintSize = 11;
 const int defaultShotDelay = 2;
 const int defaultRespawnDelay = 100;
 
-const int defaultFuel = 5000;
+const int defaultFuel = 15000;
 const int waitFuel = 100;
 
 const int defaultKillFuel = 500;
@@ -26,6 +26,8 @@ const int defaultMoveFuel = 10;
 const int defaultDeathFuel = 700;
 const int defaultWaitFuel = 20;
 const int defaultShotFuel = 50;
+
+const int deathFine = -100;
 
 const int killPoints = 100;
 
@@ -40,7 +42,7 @@ const int renewInterval = 30;
 const int selectionInterval = 300;
 
 const int defaultHealthPoints = 600;
-const int wallHealthPoints = 800;
+const int wallHealthPoints = 400;
 
 const Attack simpleAttack(10,  0,100,15*cellSize, cellSize/5,  SIMPLE);
 const Attack freezeAttack(30, 20, 20,10*cellSize,cellSize/10,FREEZING);
